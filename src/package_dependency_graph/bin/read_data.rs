@@ -5,6 +5,9 @@ pub fn read_package_list() -> (std::vec::Vec<String>) {
         match std::io::stdin().read_line(&mut line) {
             Ok(size) => {
                 if size != 0 {
+                    if line.ends_with('\n') {
+                        line.pop();
+                    }
                     package_list.push(line)
                 } else {
                     break;
