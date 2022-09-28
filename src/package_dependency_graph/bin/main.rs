@@ -7,7 +7,7 @@ use petgraph::dot::Dot;
 use petgraph::graph::Graph;
 
 fn main() {
-    let packages_vec = read_data::read_package_list();
+    let packages_vec = read_package_list();
     let packages_count = packages_vec.len();
     println!("packages count: {}", packages_count);
 
