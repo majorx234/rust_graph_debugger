@@ -8,17 +8,19 @@ pub fn get_deps(packages: std::vec::Vec<String>) -> std::vec::Vec<std::vec::Vec<
             .arg("-l")
             .arg("-u")
             .arg(package)
-            .spawn()
+            .output()
             .expect("failed");
-        let ecode = output.wait().expect("failes to wait");
-        if ecode.success() {
-            let command_output = output.wait_with_output().unwrap();
-            let string_output = String::from_utf8(command_output.stdout).unwrap();
-            println!("test {}", string_output);
-            package_dep_vec.push(string_output);
+
+        if output.status.success() {
+            let string_output = String::from_utf8(output.stdout).unwrap();
+            let dep_packages: Vec<&str> = string_output.split("\n").collect();
+            for dep_package in dep_packages {
+                package_dep_vec.push(dep_package.to_string());
+            }
         } else {
             package_dep_vec.push("".to_string());
         }
+
         println!("dep size: {}", package_dep_vec.len());
         packages_dep_vec.push(package_dep_vec);
     }
