@@ -58,8 +58,9 @@ fn create_graph_from_package_dep_list(
 fn main() {
     let packages_vec = read_package_list();
     let packages_count = packages_vec.len();
-    println!("packages count: {}", packages_count);
+    //    println!("packages count: {}", packages_count);
 
     let result = dependency_walker(packages_vec);
-    let mut dep_graph: Graph<String, String> = create_graph_from_package_dep_list(result);
+    let dep_graph: Graph<String, String> = create_graph_from_package_dep_list(result);
+    println!("huhu {}", Dot::new(&dep_graph));
 }
