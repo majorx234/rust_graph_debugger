@@ -4,6 +4,7 @@ mod read_data;
 use crate::read_data::read_package_list;
 mod pactree_wrapper;
 use pactree_wrapper::get_deps;
+use petgraph::algo;
 use petgraph::dot::Dot;
 use petgraph::graph::Graph;
 
@@ -57,10 +58,27 @@ fn create_graph_from_package_dep_list(
 
 fn main() {
     let packages_vec = read_package_list();
-    let packages_count = packages_vec.len();
-    //    println!("packages count: {}", packages_count);
+    let _packages_count = packages_vec.len();
 
     let result = dependency_walker(packages_vec);
     let dep_graph: Graph<String, String> = create_graph_from_package_dep_list(result);
-    println!("huhu {}", Dot::new(&dep_graph));
+
+    let cycles = algo::is_cyclic_directed(&dep_graph);
+    if !cycles {
+        let toposort_result = algo::toposort(&dep_graph, None);
+        match toposort_result {
+            Ok(topological_ordered_nodes) => {
+                for node_index in topological_ordered_nodes {
+                    match dep_graph.node_weight(node_index) {
+                        Some(value) => println!("{}", value),
+                        None => (),
+                    }
+                }
+            }
+            Err(_) => (),
+        }
+    }
+
+    // print .dot file
+    // println!("}}huhu {}", Dot::new(&dep_graph));
 }
