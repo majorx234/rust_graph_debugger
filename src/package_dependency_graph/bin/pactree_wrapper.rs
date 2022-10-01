@@ -6,6 +6,7 @@ pub fn get_deps(package: &String) -> Option<std::vec::Vec<String>> {
     let output = Command::new("pactree")
         .arg("-l")
         .arg("-u")
+        .arg("-r")
         .arg(&package)
         .output()
         .expect("failed");
@@ -16,6 +17,7 @@ pub fn get_deps(package: &String) -> Option<std::vec::Vec<String>> {
 
         // remove first entry because it is the package itself
         dep_packages.remove(0);
+        dep_packages.pop();
         for dep_package in dep_packages {
             packages_dep_vec.push(dep_package.to_string());
         }
