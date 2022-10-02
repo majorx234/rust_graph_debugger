@@ -19,7 +19,17 @@ pub fn get_deps(package: &String) -> Option<std::vec::Vec<String>> {
         dep_packages.remove(0);
         dep_packages.pop();
         for dep_package in dep_packages {
-            packages_dep_vec.push(dep_package.to_string());
+            match dep_package
+                .chars()
+                .position(|c| c == '=' || c == '<' || c == '>')
+            {
+                Some(pos) => {
+                    let dep_packages_without_constrains = dep_package.to_string().split_off(pos);
+                    println!("dep: {}", dep_packages_without_constrains);
+                    packages_dep_vec.push(dep_packages_without_constrains);
+                }
+                None => packages_dep_vec.push(dep_package.to_string()),
+            }
         }
         Some(packages_dep_vec)
     } else {
