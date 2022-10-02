@@ -25,7 +25,6 @@ pub fn get_deps(package: &String) -> Option<std::vec::Vec<String>> {
             {
                 Some(pos) => {
                     let dep_packages_without_constrains = dep_package.to_string().split_off(pos);
-                    println!("dep: {}", dep_packages_without_constrains);
                     packages_dep_vec.push(dep_packages_without_constrains);
                 }
                 None => packages_dep_vec.push(dep_package.to_string()),
