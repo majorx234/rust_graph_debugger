@@ -1,4 +1,4 @@
-pub fn read_package_list() -> (std::vec::Vec<String>) {
+pub fn read_package_list() -> std::vec::Vec<String> {
     let mut package_list: std::vec::Vec<String> = Vec::new();
     loop {
         let mut line = String::new();
