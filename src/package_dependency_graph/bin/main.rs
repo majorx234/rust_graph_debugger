@@ -1,21 +1,27 @@
 use std::collections::HashMap;
 extern crate petgraph;
-mod read_data;
-use crate::read_data::read_package_list;
-mod pactree_wrapper;
-use pactree_wrapper::get_deps;
 use petgraph::algo;
 use petgraph::dot::Dot;
 use petgraph::graph::Graph;
+mod dependency;
+use dependency::Dependency;
+mod pactree_wrapper;
+mod read_data;
+use crate::read_data::read_package_list;
+mod repo;
+use crate::repo::Repo;
 
-fn dependency_walker(mut to_check: std::vec::Vec<String>) -> HashMap<String, Option<Vec<String>>> {
+fn dependency_walker(
+    mut to_check: std::vec::Vec<String>,
+    dep_solver: &dyn Dependency,
+) -> HashMap<String, Option<Vec<String>>> {
     let mut package_dep_map: HashMap<String, Option<Vec<String>>> = HashMap::new();
 
     while let Some(package) = to_check.pop() {
         match package_dep_map.get(&package) {
             Some(_) => (),
             None => {
-                let dependencies_opt = get_deps(&package);
+                let dependencies_opt = dep_solver.get_deps(&package);
 
                 match dependencies_opt {
                     Some(ref dependencies) => {
@@ -70,7 +76,8 @@ fn main() {
     let packages_vec = read_package_list();
     let _packages_count = packages_vec.len();
 
-    let result = dependency_walker(packages_vec);
+    let dep_solver = Repo {};
+    let result = dependency_walker(packages_vec, &dep_solver);
 
     let dep_graph: Graph<String, String> = create_graph_from_package_dep_list(result);
 
